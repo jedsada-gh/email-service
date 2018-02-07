@@ -15,5 +15,9 @@
 			"revisionTime": "2018-01-27T01:58:12Z"
 		}
 	],
+	"heroku": {
+		"install": ["./..."],
+		"goVersion": "go1.9.3"
+	},
 	"rootPath": "github.com/email-service"
 }
