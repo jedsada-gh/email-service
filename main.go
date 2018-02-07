@@ -1,6 +1,8 @@
 package main
 
 import (
+	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
@@ -11,8 +13,9 @@ import (
 )
 
 var (
-	// domain        = os.Getenv("DOMAIN_MAILGUN_SANDBOX")
-	// apiKeyPrivate = os.Getenv("PRIVATE_KEY_MAILGUN")
+	domain            = os.Getenv("DOMAIN_MAILGUN_SANDBOX")
+	apiKeyPublic      = os.Getenv("PUBLIC_KEY_MAILGUN")
+	apiKeyPrivate     = os.Getenv("PRIVATE_KEY_MAILGUN")
 	httpPort          = os.Getenv("PORT")
 	listenIP          = "localhost"
 	pathEmail         = "/sendemail"
@@ -20,14 +23,11 @@ var (
 )
 
 const (
-	messageMethodNotAllowed      = "Method Not Allowed"
-	messageMustHaveAPIKeyPublic  = "API Key Public invalid"
-	messageMustHaveAPIKeyPrivate = "API Key Private invalid"
-	messageMustHaveDomain        = "Domain mailgun invalid"
-	messageMustHaveFrom          = "Your must have key from for email onwer"
-	messageMustHaveTo            = "Your must have key to for email recipient"
-	messageMustHaveSubject       = "Your must have subject"
-	messageMustHaveBodyOrHTML    = "Your must have body or html"
+	messageMethodNotAllowed   = "Method Not Allowed"
+	messageMustHaveFrom       = "Your must have key from for email onwer"
+	messageMustHaveTo         = "Your must have key to for email recipient"
+	messageMustHaveSubject    = "Your must have subject"
+	messageMustHaveBodyOrHTML = "Your must have body or html"
 )
 
 const (
@@ -52,9 +52,6 @@ func handlerEmail(w http.ResponseWriter, r *http.Request) {
 		util.PrintErrorMessage(w, http.StatusMethodNotAllowed, messageMethodNotAllowed)
 		return
 	}
-	domain := r.FormValue(keyDomain)
-	apiKeyPublic := r.FormValue(keyAPIKeyPublic)
-	apiKeyPrivate := r.FormValue(keyAPIKeyPrivate)
 	from := r.FormValue(keyFrom)
 	to := r.FormValue(keyTo)
 	subject := r.FormValue(keySubject)
@@ -78,6 +75,7 @@ func handlerEmail(w http.ResponseWriter, r *http.Request) {
 		if len(bodyMessage) > 0 {
 			emailModel.HTML = ""
 		} else if len(html) > 0 {
+			emailModel.HTML = getMockTemplates()
 			emailModel.Body = ""
 		}
 		err := sendEmail(emailModel)
@@ -92,13 +90,7 @@ func handlerEmail(w http.ResponseWriter, r *http.Request) {
 }
 
 func validateParams(model data.Email) (errorMessage string) {
-	if len(model.Domain) == 0 {
-		return messageMustHaveDomain
-	} else if len(model.APIKeyPrivate) == 0 {
-		return messageMustHaveAPIKeyPrivate
-	} else if len(model.APIKeyPublic) == 0 {
-		return messageMustHaveAPIKeyPublic
-	} else if len(model.Subject) == 0 {
+	if len(model.Subject) == 0 {
 		return messageMustHaveSubject
 	} else if len(model.From) == 0 {
 		return messageMustHaveFrom
@@ -129,10 +121,11 @@ func getMessageSuccess(email string) (message string) {
 	return "send email to " + email + " successfully"
 }
 
-// TODO: read templates html with inlin style only from file to string
-// html, err := ioutil.ReadFile(pathTemplatesHTML)
-// if err != nil {
-// 	log.Fatal(err)
-// 	return
-// }
-// fmt.Printf("%s", string(html))
+func getMockTemplates() (html string) {
+	byteHTML, err := ioutil.ReadFile(pathTemplatesHTML)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	return string(byteHTML)
+}
