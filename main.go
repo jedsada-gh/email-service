@@ -16,7 +16,7 @@ var (
 	httpPort          = os.Getenv("PORT")
 	listenIP          = "localhost"
 	pathEmail         = "/sendemail"
-	pathTemplatesHTML = "templates/inlined/alert.html"
+	pathTemplatesHTML = "templates/alert.html"
 )
 
 const (
