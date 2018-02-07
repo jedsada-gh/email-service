@@ -11,12 +11,9 @@ import (
 )
 
 var (
-	// domain        = os.Getenv("DOMAIN_MAILGUN_SANDBOX")
-	// apiKeyPrivate = os.Getenv("PRIVATE_KEY_MAILGUN")
-	httpPort          = os.Getenv("PORT")
-	listenIP          = "localhost"
-	pathEmail         = "/sendemail"
-	pathTemplatesHTML = "templates/alert.html"
+	httpPort  = os.Getenv("PORT")
+	listenIP  = "localhost"
+	pathEmail = "/sendemail"
 )
 
 const (
