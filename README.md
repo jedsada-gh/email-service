@@ -27,7 +27,7 @@ This project requires the 8 parameters specified to connect Mailgun.
 | html (optional) | String html format inlined, for example `<b>Text Bold</b>` |
 
 ### Note
-* if you use Sandbox Domains must add email recipient to domain by Mailgun because it use for test only. 🔥
+* If you use Sandbox Domains must add email recipient to domain by Mailgun because it use for test only. 🔥
 * You must only provide field `body` or `html` but if you use both, APIs will use field `body` instead.
 
 # Features
